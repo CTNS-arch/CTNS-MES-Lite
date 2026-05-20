@@ -313,11 +313,7 @@ tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
     <button class="sb-item" id="sb-progress" onclick="go('progress')"><i class="ti ti-activity"></i> 진행현황<span class="sb-dot"></span></button>
     <button class="sb-item" id="sb-performance" onclick="go('performance')"><i class="ti ti-chart-bar"></i> 실적분석<span class="sb-dot"></span></button>
 
-    <div class="sb-divider"></div>
-    <div class="sb-label">품질·자재</div>
-    <button class="sb-item" id="sb-quality" onclick="go('quality')"><i class="ti ti-circle-check"></i> 품질관리<span class="sb-dot"></span></button>
-    <button class="sb-item" id="sb-material" onclick="go('material')"><i class="ti ti-package"></i> 자재관리<span class="sb-dot"></span></button>
-    <button class="sb-item" id="sb-equipment" onclick="go('equipment')"><i class="ti ti-tool"></i> 설비관리<span class="sb-dot"></span></button>
+
 
     <div class="sb-divider"></div>
     <div class="sb-label">관리</div>
@@ -917,24 +913,7 @@ tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
     </div>
   </div>
 </div>
-
-<!-- 불량 등록 모달 -->
-<div class="modal-overlay" id="defect-modal">
-  <div class="modal">
-    <div class="modal-title">불량 등록 <button class="modal-close" onclick="closeModal('defect-modal')"><i class="ti ti-x"></i></button></div>
-    <div class="form-grid">
-      <div><label class="label">작업코드 *</label><input class="input" placeholder="작업코드 입력"></div>
-      <div><label class="label">발생일자 *</label><input class="input" type="date"></div>
-      <div><label class="label">검사수량</label><input class="input" type="number" placeholder="0"></div>
-      <div><label class="label">불량수량 *</label><input class="input" type="number" placeholder="0"></div>
-      <div><label class="label">불량 유형</label>
-        <select class="input"><option>치수 불량</option><option>외관 불량</option><option>기능 불량</option><option>기타</option></select>
-      </div>
-      <div><label class="label">발견자</label><input class="input" placeholder="이름"></div>
-      <div class="full"><label class="label">불량 내용</label><input class="input" placeholder="상세 내용 입력"></div>
-      <div class="full"><label class="label">조치사항</label><input class="input" placeholder="처리 방법"></div>
-    </div>
-    <div class="modal-btns">
+<div class="modal-btns">
       <button class="btn btn-secondary" onclick="closeModal('defect-modal')">취소</button>
       <button class="btn btn-danger" onclick="closeModal('defect-modal')"><i class="ti ti-check"></i> 등록</button>
     </div>
@@ -960,37 +939,13 @@ tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
     </div>
   </div>
 </div>
-
-<!-- 자재 입고 모달 -->
-<div class="modal-overlay" id="material-in-modal">
-  <div class="modal" style="max-width:400px">
-    <div class="modal-title">자재 입고 <button class="modal-close" onclick="closeModal('material-in-modal')"><i class="ti ti-x"></i></button></div>
-    <div class="form-grid">
-      <div class="full"><label class="label">자재코드</label><input class="input" placeholder="자재코드 또는 이름"></div>
-      <div><label class="label">입고수량 *</label><input class="input" type="number" placeholder="0"></div>
-      <div><label class="label">입고일자</label><input class="input" type="date"></div>
-      <div class="full"><label class="label">공급업체</label><input class="input" placeholder="업체명"></div>
-      <div class="full"><label class="label">비고</label><input class="input" placeholder="비고"></div>
-    </div>
-    <div class="modal-btns">
+<div class="modal-btns">
       <button class="btn btn-secondary" onclick="closeModal('material-in-modal')">취소</button>
       <button class="btn btn-success" onclick="closeModal('material-in-modal')"><i class="ti ti-check"></i> 입고 처리</button>
     </div>
   </div>
 </div>
-
-<!-- 자재 출고 모달 -->
-<div class="modal-overlay" id="material-out-modal">
-  <div class="modal" style="max-width:400px">
-    <div class="modal-title">자재 출고 <button class="modal-close" onclick="closeModal('material-out-modal')"><i class="ti ti-x"></i></button></div>
-    <div class="form-grid">
-      <div class="full"><label class="label">자재코드</label><input class="input" placeholder="자재코드 또는 이름"></div>
-      <div><label class="label">출고수량 *</label><input class="input" type="number" placeholder="0"></div>
-      <div><label class="label">출고일자</label><input class="input" type="date"></div>
-      <div class="full"><label class="label">사용 작업코드</label><input class="input" placeholder="작업코드"></div>
-      <div class="full"><label class="label">비고</label><input class="input" placeholder="비고"></div>
-    </div>
-    <div class="modal-btns">
+<div class="modal-btns">
       <button class="btn btn-secondary" onclick="closeModal('material-out-modal')">취소</button>
       <button class="btn btn-danger" onclick="closeModal('material-out-modal')"><i class="ti ti-check"></i> 출고 처리</button>
     </div>
@@ -1088,9 +1043,6 @@ const PAGE_INFO = {
   prodplan:{title:'생산계획',parent:'생산'},
   progress:{title:'진행현황',parent:'생산'},
   performance:{title:'실적분석',parent:'생산'},
-  quality:{title:'품질관리',parent:'품질·자재'},
-  material:{title:'자재관리',parent:'품질·자재'},
-  equipment:{title:'설비관리',parent:'품질·자재'},
   workers:{title:'작업자 현황',parent:'관리'},
   orders:{title:'수주관리',parent:'관리'},
   daily:{title:'작업일보',parent:'관리'},
