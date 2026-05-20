@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>생산 관리 시스템</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@3.10.0/lib/msal-browser.min.js"></script>
+<script src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:#1a1917}
@@ -559,7 +559,7 @@ tr:hover td{background:#fafafa}
           <button class="btn-sm primary" style="border-radius:6px;border:none">월별</button>
           <button class="btn-sm" style="border-radius:6px;border:none;background:transparent">일별</button>
         </div>
-        <button class="btn-sm primary" style="margin-left:auto"><i class="ti ti-plus"></i> 신규 등록</button>
+        <button class="btn-sm primary" style="margin-left:auto" onclick="openPlanModal()"><i class="ti ti-plus"></i> 신규 등록</button>
       </div>
       <div class="metrics">
         <div class="metric"><div class="metric-label">총 계획 건수</div><div class="metric-value blue">—</div></div>
@@ -769,6 +769,50 @@ tr:hover td{background:#fafafa}
 </div>
 
 
+<!-- 생산계획 등록 모달 -->
+<div class="plan-modal-overlay" id="plan-modal-overlay" onclick="if(event.target===this)closePlanModal()">
+  <div class="plan-modal">
+    <div class="plan-modal-title">
+      <span>신규 생산계획 등록</span>
+      <button onclick="closePlanModal()" style="background:none;border:none;font-size:20px;color:#aaa;cursor:pointer;padding:0 4px">✕</button>
+    </div>
+    <div class="plan-form-grid">
+      <div class="plan-fg">
+        <label>작업코드 *</label>
+        <input id="pf-code" type="text" placeholder="예) B26-0172">
+      </div>
+      <div class="plan-fg">
+        <label>작업일자 *</label>
+        <input id="pf-date" type="date">
+      </div>
+      <div class="plan-fg">
+        <label>제품코드</label>
+        <input id="pf-product-code" type="text" placeholder="예) P-2024-001">
+      </div>
+      <div class="plan-fg">
+        <label>계획수량 (EA) *</label>
+        <input id="pf-qty" type="number" placeholder="0" min="1">
+      </div>
+      <div class="plan-fg full">
+        <label>스펙 (Spec)</label>
+        <input id="pf-spec" type="text" placeholder="예) 200x300x50mm, SUS304, 두께 2T">
+      </div>
+      <div class="plan-fg">
+        <label>고객사</label>
+        <input id="pf-customer" type="text" placeholder="예) 현대자동차, 삼성전자">
+      </div>
+      <div class="plan-fg">
+        <label>비고</label>
+        <input id="pf-remark" type="text" placeholder="특이사항 입력">
+      </div>
+    </div>
+    <div class="plan-modal-btns">
+      <button class="btn-sm" onclick="closePlanModal()">취소</button>
+      <button class="btn-sm primary" onclick="submitPlan()"><i class="ti ti-check"></i> 등록</button>
+    </div>
+  </div>
+</div>
+
 <!-- 수량 입력 모달 -->
 <div class="qty-overlay" id="qty-overlay">
   <div class="qty-box">
@@ -784,7 +828,18 @@ tr:hover td{background:#fafafa}
 </div>
 
 <script>
-/* ══ 생산계획 달력 ══ */
+/* ══ 생산계획 등록 모달 ══ */
+.plan-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:200;padding:24px}
+.plan-modal-overlay.open{display:flex}
+.plan-modal{background:#fff;border-radius:16px;padding:28px 24px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto}
+.plan-modal-title{font-size:17px;font-weight:800;color:#1a1917;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
+.plan-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.plan-form-grid .full{grid-column:1/-1}
+.plan-fg label{display:block;font-size:11px;font-weight:700;color:#888;letter-spacing:.08em;margin-bottom:6px}
+.plan-fg input{width:100%;padding:10px 12px;border:1.5px solid #e5e5e5;border-radius:9px;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s;color:#1a1917;background:#fafafa}
+.plan-fg input:focus{border-color:#2563eb;background:#fff}
+.plan-modal-btns{display:flex;gap:8px;justify-content:flex-end}
+@media(max-width:540px){.plan-form-grid{grid-template-columns:1fr}}
 const CAL_COLORS = [
   {bg:'#dbeafe',border:'#2563eb',text:'#1d4ed8'},
   {bg:'#dcfce7',border:'#16a34a',text:'#15803d'},
@@ -965,7 +1020,7 @@ const msalConfig = {
   auth: {
     clientId: '27e80c16-3ec5-45de-bc0a-137d168e23d7',
     authority: 'https://login.microsoftonline.com/b95b87cb-eeba-4927-90d3-9cca18360110',
-    redirectUri: 'https://ctns-mes-lite.vercel.app',
+    redirectUri: 'https://ctns-mes-lite-2dre.vercel.app',
   },
   cache: { cacheLocation: 'sessionStorage' }
 };
@@ -975,12 +1030,13 @@ const loginScopes = { scopes: ['User.Read'] };
 let currentAccount = null;
 
 async function initAuth() {
-  await msalInstance.initialize();
-
   // 리디렉션 응답 처리
   try {
     const resp = await msalInstance.handleRedirectPromise();
-    if(resp) setUser(resp.account);
+    if(resp) {
+      setUser(resp.account);
+      return;
+    }
   } catch(e) {
     document.getElementById('login-err').textContent = '로그인 오류: ' + e.message;
   }
@@ -1026,6 +1082,52 @@ window.msLogout = function() {
 
 // 초기화 실행
 initAuth();
+
+/* ══ 생산계획 등록 모달 ══ */
+window.openPlanModal = function() {
+  const today = new Date().toISOString().slice(0,10);
+  document.getElementById('pf-code').value = '';
+  document.getElementById('pf-date').value = today;
+  document.getElementById('pf-product-code').value = '';
+  document.getElementById('pf-qty').value = '';
+  document.getElementById('pf-spec').value = '';
+  document.getElementById('pf-customer').value = '';
+  document.getElementById('pf-remark').value = '';
+  document.getElementById('plan-modal-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('pf-code').focus(), 150);
+};
+
+window.closePlanModal = function() {
+  document.getElementById('plan-modal-overlay').classList.remove('open');
+};
+
+window.submitPlan = async function() {
+  const code    = document.getElementById('pf-code').value.trim();
+  const date    = document.getElementById('pf-date').value;
+  const qty     = Number(document.getElementById('pf-qty').value) || 0;
+  if(!code)    { showToast('작업코드를 입력하세요'); return; }
+  if(!date)    { showToast('작업일자를 선택하세요'); return; }
+  if(qty <= 0) { showToast('계획수량을 입력하세요'); return; }
+
+  try {
+    await API.post('/api/plans', {
+      code,
+      date,
+      planQty:     qty,
+      productCode: document.getElementById('pf-product-code').value.trim(),
+      spec:        document.getElementById('pf-spec').value.trim(),
+      customer:    document.getElementById('pf-customer').value.trim(),
+      remark:      document.getElementById('pf-remark').value.trim(),
+    });
+    closePlanModal();
+    showToast(`[${code}] 생산계획 등록됨`);
+    // 캐시 갱신
+    cachedPlans = await API.get('/api/plans');
+    renderCalendar();
+  } catch(e) {
+    showToast('등록 실패: ' + e.message);
+  }
+};
 
 /* ══ 사이드바 토글 (모바일) ══ */
 function toggleSidebar(){
