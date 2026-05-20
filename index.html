@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CTNS MES · 생산관리 시스템</title>
+<title>CTNS MES Lite · 생산관리 시스템</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
@@ -283,7 +283,7 @@ tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
 <div id="login-screen">
   <div class="login-card">
     <div class="login-badge"><i class="ti ti-building-factory-2"></i></div>
-    <div class="login-title">CTNS MES</div>
+    <div class="login-title">CTNS MES Lite</div>
     <div class="login-sub">생산관리 시스템에 오신 것을 환영합니다</div>
     <button class="login-btn" onclick="msLogin()">
       <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/microsoft.svg" alt="MS">
@@ -299,7 +299,7 @@ tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
   <div class="sb-header">
     <div class="sb-brand">
       <div class="sb-icon"><i class="ti ti-building-factory-2"></i></div>
-      <div><div class="sb-name">CTNS MES</div><div class="sb-ver">생산관리 v2.0</div></div>
+      <div><div class="sb-name">CTNS MES Lite</div><div class="sb-ver">생산관리 v2.0</div></div>
     </div>
   </div>
   <div class="sb-nav">
@@ -341,7 +341,7 @@ tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
       <button class="menu-toggle" onclick="toggleSidebar()"><i class="ti ti-menu-2"></i></button>
       <span class="tb-title" id="tb-title">작업 관리</span>
       <span class="tb-sep">·</span>
-      <span class="tb-page" id="tb-page">CTNS MES</span>
+      <span class="tb-page" id="tb-page">CTNS MES Lite</span>
     </div>
     <div class="tb-right">
       <div class="tb-badge tb-live">실시간</div>
@@ -911,7 +911,7 @@ function go(id) {
   document.getElementById('sb-'+id)?.classList.add('active');
   const info = PAGE_INFO[id]||{};
   document.getElementById('tb-title').textContent = info.title||id;
-  document.getElementById('tb-page').textContent = info.parent||'CTNS MES';
+  document.getElementById('tb-page').textContent = info.parent||'CTNS MES Lite';
   closeSidebar();
 }
 
