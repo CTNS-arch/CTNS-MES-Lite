@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CTNS MES · 생산관리 시스템</title>
+<title>CTNS MES Lite · 생산관리 시스템</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
@@ -283,7 +283,7 @@ tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
 <div id="login-screen">
   <div class="login-card">
     <div class="login-badge"><i class="ti ti-building-factory-2"></i></div>
-    <div class="login-title">CTNS MES</div>
+    <div class="login-title">CTNS MES Lite</div>
     <div class="login-sub">생산관리 시스템에 오신 것을 환영합니다</div>
     <button class="login-btn" onclick="msLogin()">
       <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/microsoft.svg" alt="MS">
@@ -299,7 +299,7 @@ tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
   <div class="sb-header">
     <div class="sb-brand">
       <div class="sb-icon"><i class="ti ti-building-factory-2"></i></div>
-      <div><div class="sb-name">CTNS MES</div><div class="sb-ver">생산관리 v2.0</div></div>
+      <div><div class="sb-name">CTNS MES Lite</div><div class="sb-ver">생산관리 v2.0</div></div>
     </div>
   </div>
   <div class="sb-nav">
@@ -341,7 +341,7 @@ tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
       <button class="menu-toggle" onclick="toggleSidebar()"><i class="ti ti-menu-2"></i></button>
       <span class="tb-title" id="tb-title">작업 관리</span>
       <span class="tb-sep">·</span>
-      <span class="tb-page" id="tb-page">CTNS MES</span>
+      <span class="tb-page" id="tb-page">CTNS MES Lite</span>
     </div>
     <div class="tb-right">
       <div class="tb-badge tb-live">실시간</div>
@@ -455,8 +455,25 @@ tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
         <div class="metric green"><div class="metric-label">실적수량 합계</div><div class="metric-value">—</div><div class="metric-sub">EA</div></div>
         <div class="metric amber"><div class="metric-label">전체 달성률</div><div class="metric-value">—</div><div class="metric-sub">%</div></div>
       </div>
-      <!-- 달력 -->
+      <!-- 목록 먼저 -->
       <div class="card" style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div class="card-title" style="margin:0"><i class="ti ti-list-details"></i> 생산계획 목록</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input id="plan-filter-date" type="month" class="input" style="width:auto;font-size:12px;padding:5px 10px" onchange="filterPlanTable()">
+            <input id="plan-filter-code" class="input" style="width:120px;font-size:12px" placeholder="작업코드 검색" oninput="filterPlanTable()">
+            <input id="plan-filter-customer" class="input" style="width:100px;font-size:12px" placeholder="고객사 검색" oninput="filterPlanTable()">
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>작업일자</th><th>작업코드</th><th>제품코드</th><th>스펙</th><th>고객사</th><th>계획수량</th><th>실적수량</th><th>달성률</th><th>투입인원</th><th>작업시간</th><th>상태</th><th>비고</th><th></th></tr></thead>
+            <tbody id="plan-tbl"><tr><td colspan="13" style="text-align:center;color:var(--text3);padding:24px">등록된 계획이 없습니다</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- 달력 -->
+      <div class="card">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
           <div class="card-title" style="margin:0"><i class="ti ti-calendar-month"></i> 생산계획 달력</div>
           <div style="display:flex;align-items:center;gap:6px">
@@ -476,14 +493,12 @@ tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
           <div style="text-align:center;font-size:10px;font-weight:700;color:var(--accent);padding:5px">토</div>
         </div>
         <div class="cal-grid" id="cal-grid"></div>
-      </div>
-      <div class="card">
-        <div class="card-title"><i class="ti ti-list-details"></i> 생산계획 목록</div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>작업일자</th><th>작업코드</th><th>제품코드</th><th>스펙</th><th>고객사</th><th>계획</th><th>실적</th><th>달성률</th><th>상태</th><th>비고</th><th></th></tr></thead>
-            <tbody id="plan-tbl"><tr><td colspan="11" style="text-align:center;color:var(--text3);padding:24px">등록된 계획이 없습니다</td></tr></tbody>
-          </table>
+        <div style="display:flex;align-items:center;gap:16px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);flex-wrap:wrap">
+          <span style="font-size:10px;color:var(--text3);font-weight:700">상태:</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)"><span style="width:8px;height:8px;border-radius:2px;background:rgba(34,197,94,.3);display:inline-block"></span>완료</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)"><span style="width:8px;height:8px;border-radius:2px;background:rgba(59,130,246,.3);display:inline-block"></span>진행중</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)"><span style="width:8px;height:8px;border-radius:2px;background:var(--bg4);display:inline-block"></span>예정</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)"><span style="width:8px;height:8px;border-radius:2px;background:rgba(239,68,68,.3);display:inline-block"></span>미달성</span>
         </div>
       </div>
     </div>
@@ -584,139 +599,13 @@ tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
     </div>
 
     <!-- ══ 품질관리 ══ -->
-    <div class="page" id="page-quality">
-      <div class="page-header">
-        <div class="ph-left"><div class="page-title">품질관리</div><div class="page-desc">불량 등록 및 품질 이력 관리</div></div>
-        <div class="ph-right">
-          
-        </div>
-      </div>
-      <div class="metrics">
-        <div class="metric red"><div class="metric-label">금일 불량 건수</div><div class="metric-value">—</div></div>
-        <div class="metric amber"><div class="metric-label">이번달 불량률</div><div class="metric-value">—</div><div class="metric-sub">%</div></div>
-        <div class="metric blue"><div class="metric-label">검사 완료</div><div class="metric-value">—</div><div class="metric-sub">건</div></div>
-        <div class="metric green"><div class="metric-label">합격률</div><div class="metric-value">—</div><div class="metric-sub">%</div></div>
-      </div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title"><i class="ti ti-clipboard-check"></i> 품질 검사 이력</div>
-          <div class="tbl-wrap">
-            <table>
-              <thead><tr><th>일자</th><th>작업코드</th><th>검사수량</th><th>합격</th><th>불량</th><th>불량률</th><th>유형</th><th>처리</th></tr></thead>
-              <tbody><tr><td colspan="8" style="text-align:center;color:var(--text3);padding:24px">이력 없음</td></tr></tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title"><i class="ti ti-chart-donut"></i> 불량 유형 분포</div>
-          <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
-            <div class="stat-row"><span class="stat-label">치수 불량</span><div style="display:flex;align-items:center;gap:8px"><div class="prog-bar" style="width:100px"><div class="prog-fill red" style="width:0%"></div></div><span class="stat-value">0%</span></div></div>
-            <div class="stat-row"><span class="stat-label">외관 불량</span><div style="display:flex;align-items:center;gap:8px"><div class="prog-bar" style="width:100px"><div class="prog-fill amber" style="width:0%"></div></div><span class="stat-value">0%</span></div></div>
-            <div class="stat-row"><span class="stat-label">기능 불량</span><div style="display:flex;align-items:center;gap:8px"><div class="prog-bar" style="width:100px"><div class="prog-fill" style="width:0%"></div></div><span class="stat-value">0%</span></div></div>
-            <div class="stat-row"><span class="stat-label">기타</span><div style="display:flex;align-items:center;gap:8px"><div class="prog-bar" style="width:100px"><div class="prog-fill" style="width:0%;background:var(--purple)"></div></div><span class="stat-value">0%</span></div></div>
-          </div>
-        </div>
-      </div>
-    </div>
+    
 
     <!-- ══ 자재관리 ══ -->
-    <div class="page" id="page-material">
-      <div class="page-header">
-        <div class="ph-left"><div class="page-title">자재관리</div><div class="page-desc">원자재 입출고 및 재고 현황</div></div>
-        <div class="ph-right">
-          
-          
-          <button class="btn btn-primary"><i class="ti ti-plus"></i> 자재 등록</button>
-        </div>
-      </div>
-      <div class="metrics">
-        <div class="metric blue"><div class="metric-label">총 자재 종류</div><div class="metric-value">—</div></div>
-        <div class="metric amber"><div class="metric-label">부족 자재</div><div class="metric-value">—</div><div class="metric-sub">종</div></div>
-        <div class="metric green"><div class="metric-label">금일 입고</div><div class="metric-value">—</div><div class="metric-sub">건</div></div>
-        <div class="metric red"><div class="metric-label">금일 출고</div><div class="metric-value">—</div><div class="metric-sub">건</div></div>
-      </div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title"><i class="ti ti-box"></i> 재고 현황</div>
-          <div class="tbl-wrap">
-            <table>
-              <thead><tr><th>자재코드</th><th>자재명</th><th>규격</th><th>재고량</th><th>단위</th><th>안전재고</th><th>상태</th></tr></thead>
-              <tbody>
-                <tr><td style="font-family:var(--mono);font-size:11px">M-001</td><td>철판 SS400</td><td>1000x2000x3t</td><td style="font-family:var(--mono)">150</td><td>장</td><td>50</td><td><span class="badge badge-green">정상</span></td></tr>
-                <tr><td style="font-family:var(--mono);font-size:11px">M-002</td><td>볼트 M10</td><td>M10x30</td><td style="font-family:var(--mono)">30</td><td>박스</td><td>50</td><td><span class="badge badge-red">부족</span></td></tr>
-                <tr><td style="font-family:var(--mono);font-size:11px">M-003</td><td>용접봉 E4316</td><td>4.0mm</td><td style="font-family:var(--mono)">80</td><td>kg</td><td>30</td><td><span class="badge badge-green">정상</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title"><i class="ti ti-history"></i> 최근 입출고 내역</div>
-          <div class="tbl-wrap">
-            <table>
-              <thead><tr><th>일시</th><th>자재명</th><th>구분</th><th>수량</th><th>담당</th></tr></thead>
-              <tbody><tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px">내역 없음</td></tr></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
+    
 
     <!-- ══ 설비관리 ══ -->
-    <div class="page" id="page-equipment">
-      <div class="page-header">
-        <div class="ph-left"><div class="page-title">설비관리</div><div class="page-desc">설비 현황 및 점검 이력 관리</div></div>
-        <div class="ph-right">
-          <button class="btn btn-primary"><i class="ti ti-plus"></i> 설비 등록</button>
-        </div>
-      </div>
-      <div class="metrics">
-        <div class="metric blue"><div class="metric-label">총 설비 수</div><div class="metric-value">—</div></div>
-        <div class="metric green"><div class="metric-label">가동중</div><div class="metric-value">—</div></div>
-        <div class="metric red"><div class="metric-label">점검/고장</div><div class="metric-value">—</div></div>
-        <div class="metric amber"><div class="metric-label">가동률</div><div class="metric-value">—</div><div class="metric-sub">%</div></div>
-      </div>
-      <div class="grid-auto" style="margin-bottom:14px">
-        <div class="card" style="border-top:3px solid var(--green)">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-            <div style="font-size:13px;font-weight:800">레이저 절단기 #1</div>
-            <span class="badge badge-green">가동중</span>
-          </div>
-          <div class="stat-row"><span class="stat-label">가동시간</span><span class="stat-value">—</span></div>
-          <div class="stat-row"><span class="stat-label">마지막 점검</span><span class="stat-value" style="font-size:11px">—</span></div>
-          <div class="stat-row"><span class="stat-label">다음 예방점검</span><span class="stat-value" style="font-size:11px">—</span></div>
-          <button class="btn btn-secondary btn-sm" style="width:100%;margin-top:10px;justify-content:center"><i class="ti ti-clipboard-list"></i> 점검 등록</button>
-        </div>
-        <div class="card" style="border-top:3px solid var(--green)">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-            <div style="font-size:13px;font-weight:800">CNC 밀링 #1</div>
-            <span class="badge badge-green">가동중</span>
-          </div>
-          <div class="stat-row"><span class="stat-label">가동시간</span><span class="stat-value">—</span></div>
-          <div class="stat-row"><span class="stat-label">마지막 점검</span><span class="stat-value" style="font-size:11px">—</span></div>
-          <div class="stat-row"><span class="stat-label">다음 예방점검</span><span class="stat-value" style="font-size:11px">—</span></div>
-          <button class="btn btn-secondary btn-sm" style="width:100%;margin-top:10px;justify-content:center"><i class="ti ti-clipboard-list"></i> 점검 등록</button>
-        </div>
-        <div class="card" style="border-top:3px solid var(--red)">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-            <div style="font-size:13px;font-weight:800">프레스 #2</div>
-            <span class="badge badge-red">점검중</span>
-          </div>
-          <div class="stat-row"><span class="stat-label">가동시간</span><span class="stat-value">—</span></div>
-          <div class="stat-row"><span class="stat-label">마지막 점검</span><span class="stat-value" style="font-size:11px">—</span></div>
-          <div class="stat-row"><span class="stat-label">다음 예방점검</span><span class="stat-value" style="font-size:11px">—</span></div>
-          <button class="btn btn-secondary btn-sm" style="width:100%;margin-top:10px;justify-content:center"><i class="ti ti-clipboard-list"></i> 점검 등록</button>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title"><i class="ti ti-history"></i> 점검 이력</div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>일자</th><th>설비명</th><th>점검유형</th><th>점검자</th><th>결과</th><th>조치사항</th><th>다음점검</th></tr></thead>
-            <tbody><tr><td colspan="7" style="text-align:center;color:var(--text3);padding:24px">이력 없음</td></tr></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+    
 
     <!-- ══ 작업자 현황 ══ -->
     <div class="page" id="page-workers">
@@ -913,12 +802,6 @@ tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
     </div>
   </div>
 </div>
-<div class="modal-btns">
-      <button class="btn btn-secondary" onclick="closeModal('defect-modal')">취소</button>
-      <button class="btn btn-danger" onclick="closeModal('defect-modal')"><i class="ti ti-check"></i> 등록</button>
-    </div>
-  </div>
-</div>
 
 <!-- 수주 등록 모달 -->
 <div class="modal-overlay" id="order-modal">
@@ -1005,7 +888,7 @@ const API = {
   async del(p,b) { try { const r=await fetch(p,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}); return r.json(); } catch(e) { return null; } }
 };
 
-let cachedNames=[], cachedStates={}, cachedPlans={};
+let cachedNames=[], cachedStates={}, cachedPlans={}, cachedLogs={};
 let pollingTimer=null;
 
 async function loadAll() {
@@ -1018,6 +901,7 @@ async function loadAll() {
     renderWorkerListPage();
     renderPlanTable();
     renderCalendar();
+    renderAllLinked();
   } catch(e) {}
 }
 function startPolling() { if(pollingTimer)clearInterval(pollingTimer); pollingTimer=setInterval(loadAll,3000); }
@@ -1043,7 +927,7 @@ function go(id) {
   document.getElementById('sb-'+id)?.classList.add('active');
   const info = PAGE_INFO[id]||{};
   document.getElementById('tb-title').textContent = info.title||id;
-  document.getElementById('tb-page').textContent = info.parent||'CTNS MES';
+  document.getElementById('tb-page').textContent = info.parent||'CTNS MES Lite';
   closeSidebar();
 }
 
@@ -1241,29 +1125,80 @@ window.submitPlan=async function(){
   if(res){cachedPlans=res;closeModal('plan-modal');renderPlanTable();renderCalendar();showToast(`[${code}] 등록됨`);}
 };
 
-function renderPlanTable(){
+function renderPlanTable(filterFn){
   const tbody=document.getElementById('plan-tbl');
   if(!tbody)return;
-  const plans=Object.values(cachedPlans);
-  if(!plans.length){tbody.innerHTML='<tr><td colspan="11" style="text-align:center;color:var(--text3);padding:24px">등록된 계획이 없습니다</td></tr>';return;}
+  let plans=Object.values(cachedPlans);
+  if(filterFn)plans=plans.filter(filterFn);
+  plans.sort((a,b)=>a.date>b.date?1:-1);
+  if(!plans.length){tbody.innerHTML='<tr><td colspan="13" style="text-align:center;color:var(--text3);padding:24px">등록된 계획이 없습니다</td></tr>';return;}
   const sm={done:'완료',running:'진행중',planned:'예정',failed:'미달성'};
   const sc={done:'badge-green',running:'badge-blue',planned:'badge-gray',failed:'badge-red'};
+  // 작업자 투입 정보 계산
+  function getWorkerCount(code){
+    let cnt=new Set();
+    Object.entries(cachedStates).forEach(([worker,codes])=>{if(codes[code])cnt.add(worker);});
+    Object.entries(cachedLogs||{}).forEach(([worker,logs])=>{Object.values(logs||{}).forEach(l=>{if(l.code===code)cnt.add(worker);});});
+    return cnt.size||'—';
+  }
+  function getWorkHours(code){
+    let total=0;
+    Object.values(cachedLogs||{}).forEach(wlogs=>{
+      const entries=Object.values(wlogs||{}).filter(l=>l.code===code).sort((a,b)=>a.ts-b.ts);
+      let startTs=null;
+      entries.forEach(l=>{if(l.action==='start')startTs=l.ts;else if((l.action==='end'||l.action==='pause')&&startTs){total+=l.ts-startTs;startTs=null;}});
+    });
+    if(!total)return '—';
+    const h=Math.floor(total/3600000),m=Math.floor((total%3600000)/60000);
+    return h>0?`${h}h ${m}m`:`${m}m`;
+  }
   tbody.innerHTML=plans.map(p=>{
     const pct=p.planQty>0?Math.round((p.actQty||0)/p.planQty*100):0;
-    return `<tr>
-      <td style="font-family:var(--mono);font-size:11px">${p.date||'—'}</td>
-      <td style="font-weight:700;font-family:var(--mono)">${esc(p.code)}</td>
-      <td>${esc(p.productCode||'—')}</td>
-      <td>${esc(p.spec||'—')}</td>
+    const wCnt=getWorkerCount(p.code);
+    const wHrs=getWorkHours(p.code);
+    const isToday=p.date===new Date().toISOString().slice(0,10);
+    return `<tr style="${isToday?'background:rgba(59,130,246,.04)':''}">
+      <td style="font-family:var(--mono);font-size:11px">${isToday?`<span style="color:var(--accent);font-weight:700">${p.date}</span>`:p.date||'—'}</td>
+      <td style="font-weight:700;font-family:var(--mono);color:var(--text)">${esc(p.code)}</td>
+      <td style="color:var(--text2)">${esc(p.productCode||'—')}</td>
+      <td style="color:var(--text2);font-size:11px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(p.spec||'')}">${esc(p.spec||'—')}</td>
       <td>${esc(p.customer||'—')}</td>
-      <td style="font-family:var(--mono)">${p.planQty||0}</td>
-      <td style="font-family:var(--mono)">${p.actQty||0}</td>
-      <td><div style="display:flex;align-items:center;gap:6px"><div class="prog-bar" style="width:50px"><div class="prog-fill ${pct>=100?'green':pct>0?'':'red'}" style="width:${Math.min(pct,100)}%"></div></div><span style="font-size:11px;font-family:var(--mono)">${pct}%</span></div></td>
+      <td style="font-family:var(--mono);text-align:right">${(p.planQty||0).toLocaleString()} EA</td>
+      <td style="font-family:var(--mono);text-align:right;color:${(p.actQty||0)>0?'var(--green)':'var(--text3)'}">${(p.actQty||0).toLocaleString()} EA</td>
+      <td><div style="display:flex;align-items:center;gap:6px"><div class="prog-bar" style="width:50px"><div class="prog-fill ${pct>=100?'green':pct>=50?'':'red'}" style="width:${Math.min(pct,100)}%"></div></div><span style="font-size:11px;font-family:var(--mono);font-weight:700;color:${pct>=100?'var(--green)':pct>=50?'var(--text)':'var(--red)'}">${pct}%</span></div></td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--text2)">${wCnt}명</td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--text2)">${wHrs}</td>
       <td><span class="badge ${sc[p.status]||'badge-gray'}">${sm[p.status]||'예정'}</span></td>
-      <td>${esc(p.remark||'—')}</td>
-      <td><button class="btn btn-secondary btn-sm" onclick="deletePlan('${p.id}')"><i class="ti ti-trash"></i></button></td>
+      <td style="color:var(--text3);font-size:11px">${esc(p.remark||'—')}</td>
+      <td><button class="btn btn-secondary btn-sm" onclick="deletePlan('${p.id||p.code}')"><i class="ti ti-trash"></i></button></td>
     </tr>`;
   }).join('');
+  // 요약 KPI 업데이트
+  updatePlanKPI(plans);
+}
+
+function filterPlanTable(){
+  const dateVal=document.getElementById('plan-filter-date')?.value||'';
+  const codeVal=(document.getElementById('plan-filter-code')?.value||'').toLowerCase();
+  const custVal=(document.getElementById('plan-filter-customer')?.value||'').toLowerCase();
+  renderPlanTable(p=>{
+    if(dateVal&&!p.date?.startsWith(dateVal))return false;
+    if(codeVal&&!p.code?.toLowerCase().includes(codeVal))return false;
+    if(custVal&&!p.customer?.toLowerCase().includes(custVal))return false;
+    return true;
+  });
+}
+
+function updatePlanKPI(plans){
+  const totalPlan=plans.reduce((s,p)=>s+(p.planQty||0),0);
+  const totalAct=plans.reduce((s,p)=>s+(p.actQty||0),0);
+  const rate=totalPlan>0?Math.round(totalAct/totalPlan*100):0;
+  // prodplan 메트릭
+  const mvs=document.querySelectorAll('#page-prodplan .metric-value');
+  if(mvs[0])mvs[0].textContent=plans.length;
+  if(mvs[1])mvs[1].textContent=totalPlan.toLocaleString();
+  if(mvs[2])mvs[2].textContent=totalAct.toLocaleString();
+  if(mvs[3])mvs[3].textContent=rate;
 }
 
 window.deletePlan=async function(id){
@@ -1311,7 +1246,7 @@ window.calToday=function(){calYear=new Date().getFullYear();calMonth=new Date().
 /* ══ 작업일보 초기화 ══ */
 const todayDate=new Date().toISOString().slice(0,10);
 const dailyDateEl=document.getElementById('daily-date');
-if(dailyDateEl)dailyDateEl.value=todayDate;
+if(dailyDateEl){dailyDateEl.value=todayDate;dailyDateEl.addEventListener('change',e=>renderDailyReport(e.target.value));}
 const dn=new Date();
 const wds=['일','월','화','수','목','금','토'];
 const dtEl=document.getElementById('daily-title');
@@ -1322,6 +1257,403 @@ const dpEl=document.getElementById('daily-print');
 if(dpEl)dpEl.textContent=dn.toLocaleString('ko-KR',{hour12:false});
 
 /* ══ 토스트 ══ */
+/* ══ 연계 메뉴 렌더링 ══ */
+
+// 공통: 상태 계산
+function getPlanStatus(p){
+  const today=new Date().toISOString().slice(0,10);
+  if(p.status==='done')return 'done';
+  if(p.actQty>0&&p.actQty<p.planQty&&p.date<today)return 'failed';
+  if(p.date===today)return 'running';
+  if(p.date<today&&(!p.actQty||p.actQty<p.planQty))return 'failed';
+  return p.status||'planned';
+}
+
+function getWorkerCountForCode(code){
+  const workers=new Set();
+  Object.entries(cachedStates).forEach(([w,codes])=>{if(codes[code])workers.add(w);});
+  return workers.size;
+}
+
+function getLogsForCode(code){
+  const result=[];
+  Object.entries(cachedLogs||{}).forEach(([worker,logs])=>{
+    Object.values(logs||{}).forEach(l=>{if(l.code===code)result.push({...l,worker});});
+  });
+  return result.sort((a,b)=>a.ts-b.ts);
+}
+
+function calcWorkHours(code){
+  let total=0;
+  Object.values(cachedLogs||{}).forEach(wlogs=>{
+    const entries=Object.values(wlogs||{}).filter(l=>l.code===code).sort((a,b)=>a.ts-b.ts);
+    let st=null;
+    entries.forEach(l=>{
+      if(l.action==='start')st=l.ts;
+      else if((l.action==='end'||l.action==='pause')&&st){total+=l.ts-st;st=null;}
+    });
+  });
+  const h=Math.floor(total/3600000),m=Math.floor((total%3600000)/60000);
+  return {ms:total,str:total?h>0?`${h}h ${m}m`:`${m}m`:'—'};
+}
+
+// ── 대시보드 ──
+function renderDashboard(){
+  const today=new Date().toISOString().slice(0,10);
+  const plans=Object.values(cachedPlans);
+  const todayPlans=plans.filter(p=>p.date===today);
+  const totalPlanQty=todayPlans.reduce((s,p)=>s+(p.planQty||0),0);
+  const totalActQty=todayPlans.reduce((s,p)=>s+(p.actQty||0),0);
+  const rate=totalPlanQty>0?Math.round(totalActQty/totalPlanQty*100):0;
+  // 현재 작업중인 작업자
+  const runningWorkers=new Set();
+  Object.entries(cachedStates).forEach(([w,codes])=>{
+    Object.values(codes).forEach(s=>{if(s.action==='start')runningWorkers.add(w);});
+  });
+  // 총 작업시간 (오늘)
+  let totalMs=0;
+  Object.values(cachedLogs||{}).forEach(wlogs=>{
+    Object.values(wlogs||{}).filter(l=>l.date===new Date().toLocaleDateString('ko-KR')).forEach(l=>{
+      // approximate
+    });
+  });
+
+  const el=id=>document.getElementById(id);
+  if(el('d-plan'))el('d-plan').textContent=todayPlans.length||'0';
+  if(el('d-running'))el('d-running').textContent=runningWorkers.size||'0';
+  if(el('d-rate'))el('d-rate').textContent=rate||'0';
+  if(el('d-qty'))el('d-qty').textContent=totalActQty.toLocaleString()||'0';
+
+  // 작업코드별 진행현황 테이블
+  const ptbl=document.getElementById('d-progress-tbl');
+  if(ptbl){
+    if(!todayPlans.length){ptbl.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:20px">오늘 등록된 계획이 없습니다</td></tr>';
+    }else{
+      const sm={done:'완료',running:'진행중',planned:'예정',failed:'미달성'};
+      const sc={done:'badge-green',running:'badge-blue',planned:'badge-gray',failed:'badge-red'};
+      ptbl.innerHTML=todayPlans.map(p=>{
+        const pct=p.planQty>0?Math.round((p.actQty||0)/p.planQty*100):0;
+        const wCnt=getWorkerCountForCode(p.code);
+        const st=getPlanStatus(p);
+        return `<tr>
+          <td style="font-weight:700;font-family:var(--mono);color:var(--text)">${esc(p.code)}</td>
+          <td style="font-size:11px">${wCnt}명</td>
+          <td style="font-family:var(--mono)">${(p.planQty||0).toLocaleString()}</td>
+          <td style="font-family:var(--mono);color:var(--green)">${(p.actQty||0).toLocaleString()}</td>
+          <td><div style="display:flex;align-items:center;gap:5px"><div class="prog-bar" style="width:40px"><div class="prog-fill ${pct>=100?'green':''}" style="width:${Math.min(pct,100)}%"></div></div><span style="font-size:11px;font-family:var(--mono)">${pct}%</span></div></td>
+          <td><span class="badge ${sc[st]}">${sm[st]}</span></td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  // 작업자 현재 상태
+  const wstEl=document.getElementById('d-worker-status');
+  if(wstEl){
+    if(!cachedNames.length){wstEl.innerHTML='<div style="text-align:center;color:var(--text3);font-size:12px;padding:20px">등록된 작업자 없음</div>';}
+    else{
+      wstEl.innerHTML='<div style="display:flex;flex-direction:column;gap:6px">'+cachedNames.map((n,i)=>{
+        const st=cachedStates[n]||{};
+        const runCodes=Object.entries(st).filter(([,v])=>v.action==='start').map(([c])=>c);
+        const pauseCodes=Object.entries(st).filter(([,v])=>v.action==='pause').map(([c])=>c);
+        let statusTxt='대기중',statusColor='var(--text3)',dotColor='var(--text3)';
+        if(runCodes.length){statusTxt=runCodes.slice(0,2).join(', ')+(runCodes.length>2?` 외 ${runCodes.length-2}`:'')+' 작업중';statusColor='var(--green)';dotColor='var(--green)';}
+        else if(pauseCodes.length){statusTxt='일시정지';statusColor='var(--amber)';dotColor='var(--amber)';}
+        return `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg3);border-radius:8px;border:1px solid var(--border)">
+          <div style="width:7px;height:7px;border-radius:50%;background:${dotColor};flex-shrink:0;${runCodes.length?'animation:pulse 1.4s infinite':''}"></div>
+          <div style="width:26px;height:26px;border-radius:50%;background:${COLORS[i%COLORS.length]};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;flex-shrink:0">${esc(initial(n))}</div>
+          <span style="font-size:12px;font-weight:600;color:var(--text)">${esc(n)}</span>
+          <span style="font-size:11px;color:${statusColor};margin-left:auto;text-align:right;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${statusTxt}</span>
+        </div>`;
+      }).join('')+'</div>';
+    }
+  }
+
+  // 최근 활동
+  const recentEl=document.getElementById('d-recent');
+  if(recentEl){
+    const allLogs=[];
+    Object.entries(cachedLogs||{}).forEach(([w,wlogs])=>{
+      Object.values(wlogs||{}).forEach(l=>allLogs.push({...l,worker:w}));
+    });
+    allLogs.sort((a,b)=>b.ts-a.ts);
+    const recent=allLogs.slice(0,10);
+    if(!recent.length){recentEl.innerHTML='<div style="text-align:center;color:var(--text3);font-size:12px;padding:20px">활동 없음</div>';}
+    else{
+      const icons={start:'▶',pause:'⏸',end:'■'};
+      const cols={start:'var(--green)',pause:'var(--amber)',end:'var(--text3)'};
+      recentEl.innerHTML=recent.map(l=>`
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:11px;color:${cols[l.action]};width:14px;text-align:center">${icons[l.action]||'●'}</span>
+          <div style="flex:1;min-width:0">
+            <span style="font-size:12px;font-weight:700;font-family:var(--mono);color:var(--text)">${esc(l.code)}</span>
+            <span style="font-size:11px;color:var(--text3);margin-left:6px">${esc(l.worker)}</span>
+            ${l.qty>0?`<span style="font-size:11px;color:var(--green);margin-left:4px">${l.qty}EA</span>`:''}
+          </div>
+          <span style="font-size:10px;color:var(--text3);font-family:var(--mono);flex-shrink:0">${l.time}</span>
+        </div>`).join('');
+    }
+  }
+}
+
+// ── 진행현황 ──
+function renderProgress(){
+  const today=new Date().toISOString().slice(0,10);
+  const plans=Object.values(cachedPlans);
+  // 진행중 작업코드 (오늘 작업중인 것)
+  const runningCodes=new Set();
+  const runningWorkers=new Set();
+  Object.entries(cachedStates).forEach(([w,codes])=>{
+    Object.entries(codes).forEach(([c,s])=>{if(s.action==='start'){runningCodes.add(c);runningWorkers.add(w);}});
+  });
+
+  // 메트릭
+  const mels=document.querySelectorAll('#page-progress .metric-value');
+  if(mels[0])mels[0].textContent=runningCodes.size||'0';
+  if(mels[1])mels[1].textContent=runningWorkers.size||'0';
+  const donePlans=plans.filter(p=>p.date===today&&p.status==='done');
+  if(mels[2])mels[2].textContent=donePlans.length||'0';
+
+  // 실시간 진행현황 테이블
+  const ptbl=document.querySelector('#page-progress .tbl-wrap tbody');
+  if(ptbl){
+    const runPlans=plans.filter(p=>{
+      const codes=Object.values(cachedStates).flatMap(c=>Object.keys(c));
+      return codes.includes(p.code)||runningCodes.has(p.code);
+    });
+    if(!runPlans.length&&!runningCodes.size){
+      ptbl.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--text3);padding:24px">진행중인 작업이 없습니다</td></tr>';
+    }else{
+      const sm={done:'완료',running:'진행중',planned:'예정',failed:'미달성'};
+      const sc={done:'badge-green',running:'badge-blue',planned:'badge-gray',failed:'badge-red'};
+      // Collect all active codes from states
+      const activeCodes=new Map();
+      Object.entries(cachedStates).forEach(([w,codes])=>{
+        Object.entries(codes).forEach(([c,s])=>{
+          if(!activeCodes.has(c))activeCodes.set(c,{workers:[],action:s.action,since:s.since});
+          else activeCodes.get(c).workers.push(w);
+          activeCodes.get(c).workers.push(w);
+        });
+      });
+      const rows=[];
+      activeCodes.forEach((info,code)=>{
+        const plan=plans.find(p=>p.code===code)||{code,planQty:0,actQty:0,customer:'—',productCode:'—',spec:'—'};
+        const pct=plan.planQty>0?Math.round((plan.actQty||0)/plan.planQty*100):0;
+        const hrs=calcWorkHours(code);
+        const wSet=new Set(info.workers);
+        const recentLog=Object.values(cachedLogs||{}).flatMap(wl=>Object.values(wl||{})).filter(l=>l.code===code).sort((a,b)=>b.ts-a.ts)[0];
+        rows.push(`<tr>
+          <td style="font-weight:700;font-family:var(--mono);color:var(--text)">${esc(code)}</td>
+          <td style="font-size:11px">${esc(plan.productCode||'—')}</td>
+          <td style="font-size:11px">${esc(plan.customer||'—')}</td>
+          <td>${wSet.size}명</td>
+          <td style="font-family:var(--mono);font-size:11px">${hrs.str}</td>
+          <td style="font-family:var(--mono)">${(plan.planQty||0).toLocaleString()}</td>
+          <td style="font-family:var(--mono);color:var(--green)">${(plan.actQty||0).toLocaleString()}</td>
+          <td><div style="display:flex;align-items:center;gap:5px"><div class="prog-bar" style="width:40px"><div class="prog-fill ${pct>=100?'green':''}" style="width:${Math.min(pct,100)}%"></div></div><span style="font-size:11px;font-family:var(--mono)">${pct}%</span></div></td>
+          <td><span class="badge badge-blue" style="display:flex;align-items:center;gap:4px"><span style="width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1.4s infinite;display:inline-block"></span>작업중</span></td>
+          <td style="font-size:11px;color:var(--text3)">${recentLog?recentLog.time:'—'}</td>
+        </tr>`);
+      });
+      ptbl.innerHTML=rows.join('')||'<tr><td colspan="10" style="text-align:center;color:var(--text3);padding:24px">진행중인 작업이 없습니다</td></tr>';
+    }
+  }
+
+  // 작업자별 현재 상태
+  const wtbl=document.querySelectorAll('#page-progress .tbl-wrap')[1]?.querySelector('tbody');
+  if(wtbl){
+    if(!cachedNames.length){wtbl.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px">데이터 없음</td></tr>';}
+    else{
+      wtbl.innerHTML=cachedNames.map(n=>{
+        const st=cachedStates[n]||{};
+        const runEntries=Object.entries(st).filter(([,v])=>v.action==='start');
+        const pauseEntries=Object.entries(st).filter(([,v])=>v.action==='pause');
+        const code=runEntries[0]?.[0]||pauseEntries[0]?.[0]||'—';
+        const action=runEntries.length?'start':pauseEntries.length?'pause':'idle';
+        const since=runEntries[0]?.[1]?.since||pauseEntries[0]?.[1]?.since||'—';
+        const plan=Object.values(cachedPlans).find(p=>p.code===code)||{};
+        return `<tr>
+          <td style="font-weight:600">${esc(n)}</td>
+          <td style="font-family:var(--mono);font-weight:700">${code==='—'?'<span style="color:var(--text3)">대기중</span>':esc(code)}</td>
+          <td><span class="badge ${action==='start'?'badge-green':action==='pause'?'badge-amber':'badge-gray'}">${action==='start'?'작업중':action==='pause'?'정지':'대기'}</span></td>
+          <td style="font-family:var(--mono);font-size:11px">${since}</td>
+          <td style="font-family:var(--mono);font-size:11px">${calcWorkHours(code).str}</td>
+        </tr>`;
+      }).join('');
+    }
+  }
+}
+
+// ── 실적분석 ──
+function renderPerformance(){
+  const plans=Object.values(cachedPlans);
+  const now=new Date();
+  const monthStr=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const monthPlans=plans.filter(p=>p.date?.startsWith(monthStr));
+  const totalPlan=monthPlans.reduce((s,p)=>s+(p.planQty||0),0);
+  const totalAct=monthPlans.reduce((s,p)=>s+(p.actQty||0),0);
+  const rate=totalPlan>0?Math.round(totalAct/totalPlan*100):0;
+  const donePlans=monthPlans.filter(p=>p.status==='done');
+
+  const mels=document.querySelectorAll('#page-performance .metric-value');
+  if(mels[0])mels[0].textContent=donePlans.length;
+  if(mels[1])mels[1].textContent=totalAct.toLocaleString();
+  if(mels[2])mels[2].textContent=rate;
+
+  // 고객사별 현황
+  const custTbl=document.querySelectorAll('#page-performance .tbl-wrap')[0]?.querySelector('tbody');
+  if(custTbl){
+    const custMap={};
+    monthPlans.forEach(p=>{
+      const c=p.customer||'미지정';
+      if(!custMap[c])custMap[c]={count:0,plan:0,act:0};
+      custMap[c].count++;custMap[c].plan+=p.planQty||0;custMap[c].act+=p.actQty||0;
+    });
+    const entries=Object.entries(custMap).sort((a,b)=>b[1].act-a[1].act);
+    if(!entries.length)custTbl.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px">데이터 없음</td></tr>';
+    else{
+      const totalAct2=entries.reduce((s,[,v])=>s+v.act,0)||1;
+      custTbl.innerHTML=entries.map(([c,v])=>{
+        const r=v.plan>0?Math.round(v.act/v.plan*100):0;
+        const ratio=Math.round(v.act/totalAct2*100);
+        return `<tr>
+          <td style="font-weight:600">${esc(c)}</td>
+          <td style="font-family:var(--mono)">${v.count}</td>
+          <td style="font-family:var(--mono);color:var(--green)">${v.act.toLocaleString()} EA</td>
+          <td><div style="display:flex;align-items:center;gap:5px"><div class="prog-bar" style="width:40px"><div class="prog-fill ${r>=100?'green':''}" style="width:${Math.min(r,100)}%"></div></div><span style="font-size:11px">${r}%</span></div></td>
+          <td style="font-size:11px;font-family:var(--mono)">${ratio}%</td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  // 작업코드별 실적
+  const codeTbl=document.querySelectorAll('#page-performance .tbl-wrap')[1]?.querySelector('tbody');
+  if(codeTbl){
+    const sorted=[...monthPlans].sort((a,b)=>(b.actQty||0)-(a.actQty||0));
+    if(!sorted.length)codeTbl.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px">데이터 없음</td></tr>';
+    else{
+      const sm={done:'완료',running:'진행중',planned:'예정',failed:'미달성'};
+      const sc={done:'badge-green',running:'badge-blue',planned:'badge-gray',failed:'badge-red'};
+      codeTbl.innerHTML=sorted.map(p=>{
+        const pct=p.planQty>0?Math.round((p.actQty||0)/p.planQty*100):0;
+        const st=getPlanStatus(p);
+        return `<tr>
+          <td style="font-weight:700;font-family:var(--mono)">${esc(p.code)}</td>
+          <td style="font-family:var(--mono)">${(p.planQty||0).toLocaleString()}</td>
+          <td style="font-family:var(--mono);color:var(--green)">${(p.actQty||0).toLocaleString()}</td>
+          <td><div style="display:flex;align-items:center;gap:5px"><div class="prog-bar" style="width:40px"><div class="prog-fill ${pct>=100?'green':''}" style="width:${Math.min(pct,100)}%"></div></div><span style="font-size:11px">${pct}%</span></div></td>
+          <td><span class="badge ${sc[st]}">${sm[st]}</span></td>
+        </tr>`;
+      }).join('');
+    }
+  }
+}
+
+// ── 작업자 현황 페이지 통계 ──
+function renderWorkerStats(){
+  const tbl=document.getElementById('worker-stats-tbl');
+  if(!tbl)return;
+  if(!cachedNames.length){tbl.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px">데이터 없음</td></tr>';return;}
+  tbl.innerHTML=cachedNames.map(n=>{
+    const st=cachedStates[n]||{};
+    const activeCodes=Object.keys(st).filter(c=>st[c].action&&st[c].action!=='end');
+    const allLogs=Object.values(cachedLogs?.[n]||{});
+    const todayStr=new Date().toLocaleDateString('ko-KR');
+    const todayLogs=allLogs.filter(l=>l.date===todayStr);
+    const codeSet=new Set(todayLogs.map(l=>l.code));
+    const totalQty=todayLogs.filter(l=>l.action==='end').reduce((s,l)=>s+(l.qty||0),0);
+    const isWorking=Object.values(st).some(s=>s.action==='start');
+    return `<tr>
+      <td style="font-weight:600">${esc(n)}</td>
+      <td style="font-family:var(--mono)">${codeSet.size}</td>
+      <td style="font-family:var(--mono)">${calcWorkHours(activeCodes[0]||'').str}</td>
+      <td style="font-family:var(--mono);color:var(--green)">${totalQty>0?totalQty.toLocaleString()+' EA':'—'}</td>
+      <td><span class="badge ${isWorking?'badge-green':activeCodes.length?'badge-amber':'badge-gray'}">${isWorking?'작업중':activeCodes.length?'정지':'대기'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── 작업일보 ──
+function renderDailyReport(dateStr){
+  if(!dateStr)return;
+  const plans=Object.values(cachedPlans).filter(p=>p.date===dateStr);
+  const wds=['일','월','화','수','목','금','토'];
+  const d=new Date(dateStr);
+  const titleEl=document.getElementById('daily-title');
+  const subEl=document.getElementById('daily-sub');
+  if(titleEl)titleEl.textContent=`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 (${wds[d.getDay()]}) 작업일보`;
+  if(subEl)subEl.textContent='작성일시: '+new Date().toLocaleString('ko-KR',{hour12:false});
+
+  // 메트릭
+  const workers=new Set();
+  let totalQty=0;
+  plans.forEach(p=>{totalQty+=p.actQty||0;});
+  Object.entries(cachedStates).forEach(([w])=>workers.add(w));
+  const mels=document.querySelectorAll('#page-daily .metric-value');
+  if(mels[0])mels[0].textContent=plans.length||'0';
+  if(mels[1])mels[1].textContent=workers.size||'0';
+  if(mels[3])mels[3].textContent=totalQty>0?totalQty.toLocaleString()+' EA':'—';
+
+  // 작업코드별 현황
+  const ctbl=document.querySelectorAll('#page-daily .tbl-wrap')[0]?.querySelector('tbody');
+  if(ctbl){
+    const sm={done:'완료',running:'진행중',planned:'예정',failed:'미달성'};
+    const sc={done:'badge-green',running:'badge-blue',planned:'badge-gray',failed:'badge-red'};
+    if(!plans.length)ctbl.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px">해당 날짜 기록 없음</td></tr>';
+    else ctbl.innerHTML=plans.map(p=>{
+      const pct=p.planQty>0?Math.round((p.actQty||0)/p.planQty*100):0;
+      const hrs=calcWorkHours(p.code);
+      const st=getPlanStatus(p);
+      return `<tr>
+        <td style="font-weight:700;font-family:var(--mono)">${esc(p.code)}</td>
+        <td style="font-size:11px">${esc(p.customer||'—')}</td>
+        <td style="font-family:var(--mono)">${(p.planQty||0).toLocaleString()}</td>
+        <td style="font-family:var(--mono);color:var(--green)">${(p.actQty||0).toLocaleString()}</td>
+        <td><div style="display:flex;align-items:center;gap:5px"><div class="prog-bar" style="width:40px"><div class="prog-fill ${pct>=100?'green':''}" style="width:${Math.min(pct,100)}%"></div></div><span style="font-size:11px">${pct}%</span></div></td>
+        <td style="font-size:11px;font-family:var(--mono)">${hrs.str}</td>
+        <td><span class="badge ${sc[st]}">${sm[st]}</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 작업자별 활동
+  const wtbl=document.querySelectorAll('#page-daily .tbl-wrap')[1]?.querySelector('tbody');
+  if(wtbl){
+    const allRows=[];
+    const todayLocalStr=new Date(dateStr).toLocaleDateString('ko-KR');
+    Object.entries(cachedLogs||{}).forEach(([worker,wlogs])=>{
+      const dayLogs=Object.values(wlogs||{}).filter(l=>l.date===todayLocalStr).sort((a,b)=>a.ts-b.ts);
+      const codes=new Set(dayLogs.map(l=>l.code));
+      codes.forEach(code=>{
+        const codeLogs=dayLogs.filter(l=>l.code===code);
+        const startLog=codeLogs.find(l=>l.action==='start');
+        const endLog=[...codeLogs].reverse().find(l=>l.action==='end');
+        const qty=codeLogs.filter(l=>l.action==='end').reduce((s,l)=>s+(l.qty||0),0);
+        allRows.push(`<tr>
+          <td style="font-weight:600">${esc(worker)}</td>
+          <td style="font-family:var(--mono);font-weight:700">${esc(code)}</td>
+          <td style="font-family:var(--mono);font-size:11px">${startLog?.time||'—'}</td>
+          <td style="font-family:var(--mono);font-size:11px">${endLog?.time||'진행중'}</td>
+          <td style="font-family:var(--mono);font-size:11px">${calcWorkHours(code).str}</td>
+          <td style="font-family:var(--mono);color:var(--green)">${qty>0?qty.toLocaleString()+' EA':'—'}</td>
+        </tr>`);
+      });
+    });
+    wtbl.innerHTML=allRows.join('')||'<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:20px">해당 날짜 기록 없음</td></tr>';
+  }
+}
+
+// ── loadAll 후 전체 연계 렌더 ──
+function renderAllLinked(){
+  renderDashboard();
+  renderProgress();
+  renderPerformance();
+  renderWorkerStats();
+  const dailyDate=document.getElementById('daily-date')?.value;
+  if(dailyDate)renderDailyReport(dailyDate);
+}
+
 function showToast(msg){
   let t=document.getElementById('g-toast');
   if(!t){t=document.createElement('div');t.id='g-toast';t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--bg4);color:var(--text);border:1px solid var(--border2);padding:10px 20px;border-radius:30px;font-size:12px;font-weight:700;opacity:0;transition:all .25s;pointer-events:none;z-index:1000;white-space:nowrap;max-width:90vw;text-align:center';document.body.appendChild(t);}
