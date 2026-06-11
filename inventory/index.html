@@ -422,7 +422,8 @@ function loadDB(){
 }
 function saveDB(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(db));}catch(e){}}
 
-const now=new Date();
+// 한국 시간 기준 (UTC+9)
+const now=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Seoul'}));
 let curYear=now.getFullYear(),curMonth=now.getMonth()+1;
 
 function ledgerKey(y,m){return `${y}-${String(m).padStart(2,'0')}`;}
