@@ -1299,14 +1299,13 @@ async function handleUpload(event){
         const name  = String(r[2]||'').trim();
         const spec1 = String(r[3]||'').trim();
         const spec2 = String(r[4]||'').trim();
-        const safe  = parseInt(r[5])||0;
 
         if(!code || !name) continue;
         if(seen.has(code)) continue;
         seen.add(code);
 
         newItems.push({
-          code, name, spec1, spec2, safe,
+          code, name, spec1, spec2, safe: 0,
           cat: CAT_MAP[cat]||''
         });
       }
