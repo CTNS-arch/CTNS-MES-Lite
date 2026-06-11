@@ -354,7 +354,7 @@ td:hover .memo-btn{display:flex;align-items:center;justify-content:center}
   </div>
 <div class="rpt-section-title" style="margin-top:14px">🎯 안전재고 · 적정재고 분석</div>
   <div class="rpt-note">
-    ※ <b>권장 안전재고</b> = 일평균 사용량 × 리드타임(3일) × 안전계수(1.5)&nbsp;&nbsp;|&nbsp;&nbsp;
+    ※ <b>권장 안전재고</b> = 일평균 사용량 × 리드타임(14일) × 안전계수(1.5)&nbsp;&nbsp;|&nbsp;&nbsp;
     <b>권장 적정재고</b> = 안전재고 + 일평균 사용량 × 발주주기(7일)&nbsp;&nbsp;|&nbsp;&nbsp;최근 3개월 출고 기준
   </div>
   <div class="card" style="padding:0">
@@ -1152,7 +1152,7 @@ function buildReport(){
   build3Chart('chart-yearly',chartYearly,yLabels,yIn,yDist,yMfg,c=>{chartYearly=c});
 
   // ── 안전재고 · 적정재고 분석 ──
-  const LEAD=3, SAFETY_FACTOR=1.5, ORDER_CYCLE=7;
+  const LEAD=14, SAFETY_FACTOR=1.5, ORDER_CYCLE=7;
   const days_cur=daysInMonth(rptY,rptM);
 
   function recent3MonthAvgOut(code){
