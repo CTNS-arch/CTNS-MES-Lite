@@ -1364,8 +1364,9 @@ async function handleUpload(event){
         const prevStock = prevCol>=0 ? (parseInt(r[prevCol])||0) : 0;
 
         if(!code || !name) continue;
-        if(seen.has(code)) continue;
-        seen.add(code);
+        const uniqueKey = `${code}__${spec1}__${spec2}`;
+        if(seen.has(uniqueKey)) continue;
+        seen.add(uniqueKey);
 
         newItems.push({
           code, name, spec1, spec2, safe: 0,
@@ -1390,10 +1391,30 @@ async function handleUpload(event){
         }
         delete item._prevStock;
       });
-      db.items = newItems;
+
+      // 품목 목록: 코드+기본사양+상세사양 모두 같으면 업데이트, 하나라도 다르면 신규 추가
+      let addedCnt=0, updatedCnt=0;
+      newItems.forEach(newItem=>{
+        const existing = db.items.findIndex(i=>
+          i.code===newItem.code &&
+          (i.spec1||'')===(newItem.spec1||'') &&
+          (i.spec2||'')===(newItem.spec2||'')
+        );
+        if(existing>=0){
+          // 완전히 동일한 품목 → 이름/구분만 업데이트
+          db.items[existing].name = newItem.name;
+          db.items[existing].cat  = newItem.cat;
+          updatedCnt++;
+        } else {
+          // 코드 같아도 사양 다르면 별도 품목으로 추가
+          db.items.push(newItem);
+          addedCnt++;
+        }
+      });
+
       await saveDB();
       buildLedger();
-      showToast(newItems.length + '개 품목이 업로드되었습니다 ✓');
+      showToast(`업로드 완료 — 신규 ${addedCnt}개 추가, ${updatedCnt}개 업데이트 ✓`);
     } catch(err){
       alert('파일 읽기 오류: ' + err.message);
     }
