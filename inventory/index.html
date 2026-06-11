@@ -1362,7 +1362,7 @@ async function handleUpload(event){
         const name  = String(r[2]||'').trim();
         const spec1 = String(r[3]||'').trim();
         const spec2 = String(r[4]||'').trim();
-        const prevStock = prevCol>=0 ? (parseInt(r[prevCol])||0) : 0;
+        const prevStock = prevCol>=0 && r[prevCol]!==null && r[prevCol]!=='' ? (parseInt(r[prevCol])||0) : null;
 
         // 코드도 없고 이름도 없으면 빈 행 스킵
         if(!code && !name) continue;
@@ -1388,7 +1388,7 @@ async function handleUpload(event){
       const ym = ledgerKey(curYear, curMonth);
       if(!db.ledger[ym]) db.ledger[ym]={};
       newItems.forEach(item=>{
-        if(item._prevStock){
+        if(item._prevStock !== undefined && item._prevStock !== null){
           db.ledger[ym][ck(item.code,'carry','over')] = item._prevStock;
         }
         delete item._prevStock;
