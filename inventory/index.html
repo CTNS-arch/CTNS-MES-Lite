@@ -746,7 +746,8 @@ function saveItem(){
     spec2:document.getElementById('f-spec2').value.trim(),
     safe:parseInt(document.getElementById('f-safe').value)||0
   };
-  if(!item.code||!item.name){alert('코드와 품목명은 필수입니다.');return;}
+  // 둘 다 비어있으면 저장 불가
+  if(!item.code && !item.name){alert('품목코드 또는 품목명 중 하나는 입력해주세요.');return;}
   if(idx>=0)db.items[idx]=item;else db.items.push(item);
   saveDB();closeItemModal();buildItems();showToast('저장되었습니다');
 }
@@ -1363,7 +1364,8 @@ async function handleUpload(event){
         const spec2 = String(r[4]||'').trim();
         const prevStock = prevCol>=0 ? (parseInt(r[prevCol])||0) : 0;
 
-        if(!code || !name) continue;
+        // 코드도 없고 이름도 없으면 빈 행 스킵
+        if(!code && !name) continue;
         const uniqueKey = `${code}__${spec1}__${spec2}`;
         if(seen.has(uniqueKey)) continue;
         seen.add(uniqueKey);
@@ -1371,7 +1373,7 @@ async function handleUpload(event){
         newItems.push({
           code, name, spec1, spec2, safe: 0,
           cat: CAT_MAP[cat]||'',
-          _prevStock: prevStock  // 전월재고 임시 저장
+          _prevStock: prevStock
         });
       }
 
